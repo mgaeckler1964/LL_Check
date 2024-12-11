@@ -1,0 +1,10 @@
+USEUNIT("webImporter.cpp");
+USEFORM("DataUnit.cpp", theDataModule); /* TDataModule: File Type */
+USERES("web_import.res");
+USELIB("..\..\Object\gaklib\gaklib_bcb.lib");
+USEUNIT("webImportThrd.cpp");
+USEUNIT("importConsoleStatus.cpp");
+//---------------------------------------------------------------------------
+Diese Datei wird nur vom Projekt-Manager verwendet und sollte wie die Projektdatei behandelt werden
+
+main

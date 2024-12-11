@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.05.03"/>
+    <PROJECT value="..\..\object\http_check.exe"/>
+    <OBJFILES value="..\..\object\llcheck\httpCheck\http_check.obj 
+      ..\..\object\llcheck\httpCheck\httpChartFrm.obj 
+      ..\..\object\llcheck\httpCheck\HttpCheckMainFrm.obj 
+      ..\..\object\llcheck\httpCheck\httpFrm.obj 
+      ..\..\object\llcheck\httpCheck\DataUnit.obj 
+      ..\..\object\llcheck\httpCheck\httpLoginFrm.obj 
+      ..\..\object\llcheck\httpCheck\httpTimesFrm.obj 
+      ..\..\object\llcheck\httpCheck\WINLIB.obj 
+      ..\..\object\llcheck\httpCheck\AboutFrm.obj 
+      ..\..\object\llcheck\httpCheck\httpAutoCheckFrm.obj 
+      ..\..\object\llcheck\httpCheck\HttpRecurringFrm.obj 
+      ..\..\object\llcheck\httpCheck\WebTestFrm.obj 
+      ..\..\object\llcheck\httpCheck\HtmlBrowseFrm.obj 
+      ..\..\object\llcheck\httpCheck\TestResultFrm.obj"/>
+    <RESFILES value="http_check.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES) httpChartFrm.dfm HttpCheckMainFrm.dfm httpFrm.dfm DataUnit.dfm 
+      httpLoginFrm.dfm httpTimesFrm.dfm AboutFrm.dfm httpAutoCheckFrm.dfm 
+      HttpRecurringFrm.dfm WebTestFrm.dfm HtmlBrowseFrm.dfm TestResultFrm.dfm"/>
+    <LIBFILES value="..\..\Object\gaklib\gaklib_bcb.lib"/>
+    <LIBRARIES value="bcbie50.lib nmfast50.lib tee50.lib vclbde50.lib vcldb50.lib vclx50.lib 
+      vcl50.lib"/>
+    <SPARELIBS value="vcl50.lib vclx50.lib vcldb50.lib vclbde50.lib tee50.lib nmfast50.lib 
+      bcbie50.lib"/>
+    <PACKAGES value="vcl50.bpi vclx50.bpi vcljpg50.bpi vcldb50.bpi vclbde50.bpi vcldbx50.bpi 
+      qrpt50.bpi teeui50.bpi teedb50.bpi tee50.bpi"/>
+    <PATHCPP value=".;..\WINLIB"/>
+    <PATHPAS value=".;"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib_uk\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib_uk\release"/>
+    <LINKER value="ilink32"/>
+    <USERDEFINES value="NDEBUG"/>
+    <SYSDEFINES value="NO_STRICT;_VIS_NOLIB"/>
+    <MAINSOURCE value="http_check.cpp"/>
+    <INCLUDEPATH value="..\WINLIB;..;..\GAKLIB\INCLUDE;$(BCB)\include;$(BCB)\include\vcl;c:\openssl\include\;&quot;C:\Program Files (x86)\OpenSSL\include\&quot;"/>
+    <LIBPATH value="..\GAKLIB\CTOOLS;..\WINLIB;$(BCB)\lib_uk\obj;$(BCB)\lib_uk;&quot;G:\OpenSSL\lib\Builder5\&quot;"/>
+    <WARNINGS value="-w-par -w-8027 -w-8026"/>
+    <WARNOPTSTR value=""/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\WINLIB -I.. -I..\GAKLIB\INCLUDE -I$(BCB)\include -I$(BCB)\include\vcl 
+      -Ic:\openssl\include\. -I&quot;C:\Program Files (x86)\OpenSSL\include\.&quot; 
+      -src_suffix cpp -DNDEBUG -boa"/>
+    <CFLAG1 value="-O2 -H=..\..\object\\llcheck\ll_check.csm -Hc -w -Vx -Ve -X- -a8 -6 -b- -d 
+      -k- -vi -c -tW -tWM"/>
+    <PFLAGS value="-N2..\..\object\llcheck\httpCheck -N0..\..\object\llcheck\httpCheck -$Y- 
+      -$L- -$D- -v -JPHNE -M"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-I..\..\object\llcheck\httpCheck -D&quot;&quot; -GC&quot;Livelink/HTTP Checker&quot; -aa -Tpe 
+      -GD -s -Gn -w"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0w32.obj sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=1
+MajorVer=3
+MinorVer=0
+Release=0
+Build=54
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=1033
+CodePage=1252
+
+[Version Info Keys]
+CompanyName=CRESD GmbH
+FileDescription=Web Analyser
+FileVersion=3.0.0.54
+InternalName=HTTP CHECK
+LegalCopyright=(c) 2003-2014 by CRESD GmbH
+LegalTrademarks=
+OriginalFilename=http_check.exe
+ProductName=HTTP Check
+ProductVersion=3.0.0.0
+Comments=Internet: http://www.cresd.de/
+
+[HistoryLists\hlIncludePath]
+Count=5
+Item0=..\WINLIB;..;..\GAKLIB\INCLUDE;$(BCB)\include;$(BCB)\include\vcl;c:\openssl\include\;C:\Program Files (x86)\OpenSSL\include\
+Item1=..\WINLIB;..;..\GAKLIB\INCLUDE;$(BCB)\include;$(BCB)\include\vcl;e:\openssl\include\;C:\Program Files (x86)\OpenSSL\include\
+Item2=..\WINLIB;..;..\GAKLIB\INCLUDE;$(BCB)\include;$(BCB)\include\vcl;e:\openssl\include\;C:\Program Files (x86)\OpenSSL\include
+Item3=..\WINLIB;..;..\GAKLIB\INCLUDE;$(BCB)\include;$(BCB)\include\vcl;e:\openssl\include\;c:\Programme\openssl\include\
+Item4=..\WINLIB;..;..\GAKLIB\INCLUDE;$(BCB)\include;$(BCB)\include\vcl;g:\openssl\include\;c:\Programme\openssl\include\
+
+[HistoryLists\hlLibraryPath]
+Count=1
+Item0=..\GAKLIB\CTOOLS;..\WINLIB;$(BCB)\lib_uk\obj;$(BCB)\lib_uk;G:\OpenSSL\lib\Builder5\
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=C:\tristan\Source\ll_check
+
+[HistoryLists\hlConditionals]
+Count=2
+Item0=NDEBUG
+Item1=NDEBUG;_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\object\llcheck\httpCheck
+
+[HistoryLists\hlFinalOutputDir]
+Count=1
+Item0=..\..\object\
+
+[Debugging]
+DebugSourceDirs=
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
+  </IDEOPTIONS>
+</PROJECT>

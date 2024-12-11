@@ -1,0 +1,10 @@
+USEUNIT("llImporter.cpp");
+USEFORM("DataUnit.cpp", theDataModule); /* TDataModule: File Type */
+USERES("ll_import.res");
+USELIB("..\..\Object\gaklib\gaklib_bcb.lib");
+USEUNIT("llImportThrd.cpp");
+USEUNIT("importConsoleStatus.cpp");
+//---------------------------------------------------------------------------
+Diese Datei wird nur vom Projekt-Manager verwendet und sollte wie die Projektdatei behandelt werden
+
+main

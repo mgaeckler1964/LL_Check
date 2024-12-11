@@ -1,0 +1,14 @@
+http://wxx4931/livelink9/livelink?func=ll.login&username=mgaeckler.munichre.com&password=4mrweb&NextURL=/livelink9/livelink
+MrPassword=NG1yd2ViAAAA; MrCookie=mgaeckler%2Emunichre%2Ecom; LLCookie=%2FEzOT4lMD4kMD4hMTg3N2xpb1kwPy1nYWVja2xlYn4tZX5pY2hidW4jb21vJD1id3ViYA; 
+http://wxx4931/livelink9/livelink?func=ll&objtype=141&objaction=browse
+
+
+
+http://mxx0071/livelink/livelink.exe?func=ll.login&username=mgaeckler.munichre.com&password=4mrweb&NextURL=/livelink/livelink.exe
+MrPassword=NG1yd2ViAAAA; MrCookie=mgaeckler%2Emunichre%2Ecom; LLCookie=%2FEzOT4lMD4kMD4hMTg3N2xpb1xsby1nYWVja2xlYn4tZX5pY2hidW4jb21vJD1id3ViYA; 
+http://mxx0071/livelink/livelink.exe?func=ll&objtype=141&objaction=browse
+http://mxx0071/livelink/livelink.exe?func=ll&objID=6602&objaction=AstraMenu
+
+http://loriot/livelink9/livelink.exe?func=ll.login&username=martin.gaeckler.de&password=isoalk&NextURL=/
+MrGroupId=16061; MrSessionId=167; MrPassword=aXNvYWxrAAAA; MrCookie=martin%2Egaeckler%2Ede; LLCookie=%2FEyNz4gPiA%2BITc8SUZVTElOS08tYWJ0eW5uJ2FlY2tsZWJ%2BJGVvKWN%2FYWxrYA; 
+http://loriot/livelink9/livelink.exe?func=ll&objid=2232&objAction=AstraMenu

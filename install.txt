@@ -1,0 +1,68 @@
+Livelink Analyser
+=================
+
+(c) 2003-2005 by Martin Gäckler, Linz. (https://www.gaeckler.at)
+
+Was Sie brauchen
+----------------
+
+1. Einen Livelink Server ab Version 9.
+2. Eine Oracle Datenbank ab Version 7. (Sie sollten nicht die gleiche Datenbank
+   verwenden, die auch Ihr Livelinkserver verwendet).
+3. Ca. 3 GB freie Festplattenkapazität je nach Auslastung Ihrer Livelinkserver.
+
+
+Installation
+------------
+
+Nach der Installation müssen Sie noch folgende Schritte durchführen, ehe das 
+Programm zum ersten mal aufgerufen werden kann:
+
+1. Oracle Tablespace einrichten:
+
+Für einen Livelink-Server, der 4 Mio Requests / Monat bearbeiten muß, 
+benötigen Sie einen Tablespace von ca 2 GB Größe, 300 MB Temp-Segmente und 
+50 MB Rollback-Segmente.
+
+2. Oracle Benutzer einrichten:
+
+Erzeugen Sie nun eine Oracle Benutzer ll_check mit dem Kennwort ll_check.
+Dieser Benutzer benötigt die Rechte Connect und Ressource. Weisen Sie dem
+Benutzer den im ersten Schritt erzeugten Tablespace zu.
+
+3. Oracle Tabellen erzeugen: 
+
+Starten Sie SQL*Plus und melden Sie sich mit der im zweiten Schritt erzeugten 
+Kennung an Oracle an. Führen Sie nun das mitgelieferte Script ora_tabs.sql aus.
+
+5. BDE einrichten:
+
+Starten Sie nun das Programm BDE Administrator. In der Konfiguration des 
+Oracle Treibers müssen Sie im Feld DLL32 den Wert SQLORA32.DLL und im Feld 
+VENDOR INIT den Wert ORA73.DLL auswählen, falls Sie Oracle Version 7 einsetzen.
+Falls Sie Oracle 8 oder 9 einsetzen, wählen Sie bitte die Werte SQLORA8.DLL 
+und OCI.DLL aus.
+
+Erzeugen Sie nun bei der Datenbankkonfiguration eine neue Datenbank mit dem 
+Namen LL_CHECK. Als Datenbanktreiber wählen Sie ORACLE aus. Wenn die Datenbank 
+erzeugt ist, können Sie im Feld SERVER NAME den SQL*Net Namen Ihrer 
+Oracleinstanz auswählen.
+
+6. Summary Timings einschalten:
+
+Wechseln Sie nun in das Configverzeichnis Ihrer Livelinkinstallation und 
+öffnen Sie die Datei opentext.ini. Suchen Sie dor den Abschitt [options] und 
+fügen Sie dort die Zeile 
+
+WantSummaryTimings=TRUE
+
+ein. Wenn der Wert bereits vorhanden ist, ändern Sie bitte diesen entsprechend.
+
+Starten Sie nun den Livelinkserver neu.
+
+7. Livelinkserver eintragen:
+
+Nun können Sie den Livelink Analyser starten. Öffnen Sie dort den Menüpunkt 
+"View/Tests -> LL Servers...". Tragen Sie dort Ihren Livelinkserver ein. Im 
+unteren Feld müssen Sie den Pfad zum Logverzeichnis Ihres Livelinkservers 
+eintragen (z.B.: C:\Programme\Opentext\Livelink9\logs).

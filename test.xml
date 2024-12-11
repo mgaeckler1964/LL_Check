@@ -1,0 +1,6 @@
+<ll_check>
+	<get url="/" />
+	<sleep time="10000" />
+	<get url="/livelink9/livelink.exe" />
+	<sleep time="10000" />
+</ll_check>
