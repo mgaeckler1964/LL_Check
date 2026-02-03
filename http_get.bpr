@@ -3,7 +3,7 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.05.03"/>
-    <PROJECT value="..\..\Object\check_http.exe"/>
+    <PROJECT value="..\..\Object\http_get.exe"/>
     <OBJFILES value="..\..\Object\llcheck\check_http\http_get.obj"/>
     <RESFILES value=""/>
     <IDLFILES value=""/>
@@ -27,9 +27,9 @@
     <LINKER value="tlink32"/>
     <USERDEFINES value=""/>
     <SYSDEFINES value="NO_STRICT;_NO_VCL;USEPACKAGES"/>
-    <MAINSOURCE value="check_http.bpf"/>
+    <MAINSOURCE value="http_get.bpf"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\GAKLIB\INCLUDE;c:\OpenSSL\include\;&quot;C:\Program Files (x86)\OpenSSL\include\&quot;"/>
-    <LIBPATH value="..\..\object\CBuilder\Lib;&quot;C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk\Release&quot;;$(BCB)\lib_uk\obj;$(BCB)\lib_uk"/>
+    <LIBPATH value="..\..\object\CBuilder\Lib;&quot;C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk\Release\&quot;;$(BCB)\lib_uk\obj;$(BCB)\lib_uk"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>

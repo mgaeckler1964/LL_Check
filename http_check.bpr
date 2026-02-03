@@ -72,7 +72,7 @@ AutoIncBuild=1
 MajorVer=3
 MinorVer=0
 Release=0
-Build=54
+Build=56
 Debug=0
 PreRelease=0
 Special=0
@@ -84,7 +84,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=CRESD GmbH
 FileDescription=Web Analyser
-FileVersion=3.0.0.54
+FileVersion=3.0.0.56
 InternalName=HTTP CHECK
 LegalCopyright=(c) 2003-2014 by CRESD GmbH
 LegalTrademarks=
@@ -106,8 +106,9 @@ Count=1
 Item0=..\GAKLIB\CTOOLS;..\WINLIB;$(BCB)\lib_uk\obj;$(BCB)\lib_uk;G:\OpenSSL\lib\Builder5\
 
 [HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=C:\tristan\Source\ll_check
+Count=2
+Item0=C:\CRESD\Source\GAKLIB\INCLUDE\gak\
+Item1=C:\tristan\Source\ll_check
 
 [HistoryLists\hlConditionals]
 Count=2
@@ -123,7 +124,7 @@ Count=1
 Item0=..\..\object\
 
 [Debugging]
-DebugSourceDirs=
+DebugSourceDirs=C:\CRESD\Source\GAKLIB\INCLUDE\gak\
 
 [Parameters]
 RunParams=

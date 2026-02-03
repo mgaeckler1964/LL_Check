@@ -1,5 +1,5 @@
 object httpForm: ThttpForm
-  Left = 570
+  Left = 310
   Top = 390
   Width = 900
   Height = 469

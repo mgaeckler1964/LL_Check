@@ -9,8 +9,8 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = ll_import.exe web_import.exe check_http.exe checkHttpService.exe \
-  http_check.exe ll_check.exe
+PROJECTS = ll_import.exe web_import.exe http_get.exe checkHttpService.exe \
+  ll_check.exe http_check.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ ll_import.exe: ll_import.bpr
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-check_http.exe: check_http.bpr
+http_get.exe: http_get.bpr
   $(ROOT)\bin\bpr2mak $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
