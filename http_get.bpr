@@ -5,7 +5,7 @@
     <VERSION value="BCB.05.03"/>
     <PROJECT value="..\..\Object\http_get.exe"/>
     <OBJFILES value="..\..\Object\llcheck\check_http\http_get.obj"/>
-    <RESFILES value=""/>
+    <RESFILES value="http_get.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
@@ -50,7 +50,7 @@
   </LINKER>
   <IDEOPTIONS>
 [Version Info]
-IncludeVerInfo=0
+IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
 MinorVer=0
@@ -61,20 +61,20 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1031
+Locale=1033
 CodePage=1252
 
 [Version Info Keys]
-CompanyName=
-FileDescription=
+CompanyName=Martin Gäckler
+FileDescription=HTTP Client
 FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
+InternalName=http_get.exe
+LegalCopyright=(c) 2003-2026 by Martin Gäckler
 LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
-Comments=
+OriginalFilename=http_get.exe
+ProductName=HTTP Check
+ProductVersion=3.0.0.0
+Comments=https::www.gaeckler.at/
 
 [HistoryLists\hlIncludePath]
 Count=8

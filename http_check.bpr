@@ -72,7 +72,7 @@ AutoIncBuild=1
 MajorVer=3
 MinorVer=0
 Release=0
-Build=57
+Build=58
 Debug=0
 PreRelease=0
 Special=0
@@ -82,16 +82,16 @@ Locale=1033
 CodePage=1252
 
 [Version Info Keys]
-CompanyName=CRESD GmbH
+CompanyName=Martin Gäckler
 FileDescription=Web Analyser
-FileVersion=3.0.0.57
+FileVersion=3.0.0.58
 InternalName=HTTP CHECK
-LegalCopyright=(c) 2003-2014 by CRESD GmbH
+LegalCopyright=(c) 2003-2014 by Martin Gäckler
 LegalTrademarks=
 OriginalFilename=http_check.exe
 ProductName=HTTP Check
 ProductVersion=3.0.0.0
-Comments=Internet: http://www.cresd.de/
+Comments=Internet: https://www.gaeckler.at/
 
 [HistoryLists\hlIncludePath]
 Count=5

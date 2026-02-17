@@ -58,7 +58,7 @@ AutoIncBuild=1
 MajorVer=3
 MinorVer=0
 Release=0
-Build=18
+Build=19
 Debug=0
 PreRelease=0
 Special=0
@@ -68,16 +68,16 @@ Locale=1033
 CodePage=1252
 
 [Version Info Keys]
-CompanyName=CRESD GmbH
+CompanyName=Martin Gäckler
 FileDescription=Automatic HTTP Checks
-FileVersion=3.0.0.18
+FileVersion=3.0.0.19
 InternalName=HTTP _CHECK_SERVICE
-LegalCopyright=(c) 2009-2014 by CRESD GmbH
+LegalCopyright=(c) 2009-2014 by Martin Gäckler
 LegalTrademarks=
 OriginalFilename=checkHttpService.exe
 ProductName=LL Check
 ProductVersion=3.0.0.0
-Comments=http://www.cresd.de/
+Comments=https://www.gaeckler.at/
 
 [HistoryLists\hlIncludePath]
 Count=5

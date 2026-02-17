@@ -60,7 +60,7 @@ AutoIncBuild=1
 MajorVer=3
 MinorVer=0
 Release=0
-Build=23
+Build=24
 Debug=0
 PreRelease=0
 Special=0
@@ -70,16 +70,16 @@ Locale=1033
 CodePage=1252
 
 [Version Info Keys]
-CompanyName=CRESD GmbH
+CompanyName=Martin Gäckler
 FileDescription=Web Server Log Importer
-FileVersion=3.0.0.23
+FileVersion=3.0.0.24
 InternalName=web_import
-LegalCopyright=(c) 2003-2014 by CRESD GmbH
+LegalCopyright=(c) 2003-2014 by Martin Gäckler
 LegalTrademarks=
 OriginalFilename=web_import.exe
 ProductName=LL Check
 ProductVersion=3.0.0.0
-Comments=Internet: http://www.cresd.de/
+Comments=Internet: https://www.gaeckler.at/
 
 [HistoryLists\hlIncludePath]
 Count=1

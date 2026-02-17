@@ -1,5 +1,6 @@
 USEUNIT("http_get.cpp");
 USELIB("..\..\Object\gaklib\gaklib_bcb.lib");
+USERES("http_get.res");
 //---------------------------------------------------------------------------
 This file is used by the project manager only and should be treated like the project file
 
