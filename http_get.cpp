@@ -41,6 +41,7 @@
 #include <gak/mboxParser.h>
 #include <gak/stringStream.h>
 #include <gak/stdlib.h>
+#include <gak/directory.h>
 
 #pragma hdrstop
 
@@ -82,6 +83,7 @@ static void usage()
 		"-O <port>    which proxy port to use\n"
 		"-U <count>   number of user to emulate\n"
 		"-X <time>    expectd time to execute\n"
+		"-Y           Redirect stdout to <ProgramData>\n"
 		"-Z <file>    save loaded URLs to a file\n"
 		"-I           include subdata (images, frames etc.)\n"
 		"-E           log socket errors and http errors (status >= 400) to stderr\n"
@@ -210,6 +212,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 	bool		logTiming		= false;
 	bool		logHeader		= false;
 	bool		includes		= false;
+	bool		redirectStdOut	= false;
 	int			count			= 1;
 	int			delay			= 0;
 	int			buffsize		= 10240;
@@ -337,7 +340,10 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 					//commandLine += " -Z";
 					scriptFile = argv[i];
 					break;
-
+				case 'Y':
+					commandLine += " -Y";
+					redirectStdOut = true;
+					break;
 				default:
 					std::cerr << "illegal option " << arg << " found\n";
 					usage();
@@ -378,6 +384,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 
 		std::auto_ptr<net::HTTPprofiler>	theConnection( new net::HTTPprofiler );
 
+		theConnection->setUserAgent("check_http/http_get ");
 		if( count < 1 )
 			count = 1;
 
@@ -439,7 +446,6 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 						url << '\n' <<
 						theConnection->getHeader() << '\n'
 				;
-//				dumpHttpObject( out, theConnection.get() );
 				returnCode++;
 			}
 			if( !errBuffer.isEmpty() )
@@ -453,18 +459,31 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 					mail::appendMail("http_get errors", errBuffer );
 				}
 			}
-			if( logTiming )
+			if( logTiming || logHeader )
 			{
-				std::cout << execTime << ','
-					<< theConnection->count() << ','
-					<< responseLen << ','
-					<< url << ','
-					<< i << '\n';
-			}
-			if( logHeader )
-			{
-				std::cout << url << ',' << i << '\n'
-					<< theConnection->getHeader() << '\n';
+				std::ofstream of;
+				std::ostream *out = &std::cout;
+				if( redirectStdOut )
+				{
+					STRING logFile = getGlobalConfig() +
+							DIRECTORY_DELIMITER_STRING "httpGetTimings.csv";
+					of.open( logFile, ios_base::app|ios_base::out );
+					out = &of; 
+				}
+				if( logTiming )
+				{
+					*out << getCurrentTime() << ',' << execTime << ','
+						<< theConnection->count() << ','
+						<< responseLen << ','
+						<< statusCode << ','
+						<< url << ','
+						<< i << '\n';
+				}
+				if( logHeader )
+				{
+					*out << getCurrentTime() << ',' << url << ',' << i << '\n'
+						<< theConnection->getHeader() << '\n';
+				}
 			}
 			if( statusCode == 200 && !outputFile.isEmpty() )
 			{
