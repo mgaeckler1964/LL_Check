@@ -26,17 +26,17 @@
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
     <LINKER value="tlink32"/>
     <USERDEFINES value=""/>
-    <SYSDEFINES value="NO_STRICT;_NO_VCL;USEPACKAGES"/>
+    <SYSDEFINES value="NO_STRICT;_NO_VCL"/>
     <MAINSOURCE value="http_get.bpf"/>
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\GAKLIB\INCLUDE;c:\OpenSSL\include\;&quot;C:\Program Files (x86)\OpenSSL\include\&quot;"/>
-    <LIBPATH value="..\..\object\CBuilder\Lib;&quot;C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk\Release\&quot;;$(BCB)\lib_uk\obj;$(BCB)\lib_uk"/>
+    <LIBPATH value="$(BCB)\lib_uk\obj;$(BCB)\lib_uk"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I..\GAKLIB\INCLUDE 
       -Ic:\OpenSSL\include\. -I&quot;C:\Program Files (x86)\OpenSSL\include\.&quot; 
       -src_suffix cpp -boa"/>
-    <CFLAG1 value="-O2 -Vx -Ve -X- -a8 -b- -d -k- -vi -tWC -tWM -c"/>
+    <CFLAG1 value="-O2 -w -Vx -Ve -X- -a8 -b- -d -k- -vi -tWC -tWM -c"/>
     <PFLAGS value="-N2..\..\Object\llcheck\check_http -N0..\..\Object\llcheck\check_http -$Y- 
       -$L- -$D- -v -JPHNE -M"/>
     <RFLAGS value=""/>
@@ -44,7 +44,7 @@
     <LFLAGS value="-I..\..\Object\llcheck\check_http -D&quot;&quot; -ap -Tpe -GD -s -Gn -w"/>
   </OPTIONS>
   <LINKER>
-    <ALLOBJ value="c0x32.obj $(PACKAGES) $(OBJFILES)"/>
+    <ALLOBJ value="c0x32.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cw32mt.lib"/>
   </LINKER>
@@ -88,16 +88,22 @@ Item6=$(BCB)\include;$(BCB)\include\vcl;C:\CRESD\Source\GAKLIB\INCLUDE
 Item7=$(BCB)\include;$(BCB)\include\vcl
 
 [HistoryLists\hlLibraryPath]
-Count=5
+Count=6
 Item0=$(BCB)\lib_uk\obj;$(BCB)\lib_uk
-Item1=C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk\;C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk\Release\;..\..\Object\CBuilder\Lib;$(BCB)\lib\obj;$(BCB)\lib
-Item2=C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk;C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk\Release;..\..\Object\CBuilder\Lib;$(BCB)\lib\obj;$(BCB)\lib
-Item3=..\..\Object\CBuilder\Lib;$(BCB)\lib\obj;$(BCB)\lib
-Item4=$(BCB)\lib\obj;$(BCB)\lib
+Item1=..\..\object\CBuilder\Lib;C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk\Release\;$(BCB)\lib_uk\obj;$(BCB)\lib_uk
+Item2=C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk\;C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk\Release\;..\..\Object\CBuilder\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item3=C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk;C:\Program Files (x86)\Borland\CBuilder5\Lib_Uk\Release;..\..\Object\CBuilder\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item4=..\..\Object\CBuilder\Lib;$(BCB)\lib\obj;$(BCB)\lib
+Item5=$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
-Count=1
+Count=2
 Item0=$(BCB)\source\vcl
+Item1=c:\program files (x86)\borland\cbuilder5\source\vcl;C:\CRESD\Source\GAKLIB\INCLUDE\gak\
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
 
 [HistoryLists\hlIntOutputDir]
 Count=2
@@ -113,7 +119,7 @@ Item1=C:\CRESD\Object
 DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
-RunParams=
+RunParams=https://www.gaeckler.at/
 HostApplication=
 RemoteHost=
 RemotePath=
@@ -128,10 +134,5 @@ LinkCGLIB=0
 AddServerUnit=1
 AddClientUnit=1
 PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
   </IDEOPTIONS>
 </PROJECT>

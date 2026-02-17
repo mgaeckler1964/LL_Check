@@ -1,18 +1,18 @@
 /*
 		Project:		LL_Check
-		Module:			
-		Description:	
+		Module:
+		Description:
 		Author:			Martin Gäckler
 		Address:		Hofmannsthalweg 14, A-4030 Linz
 		Web:			https://www.gaeckler.at/
 
 		Copyright:		(c) 1988-2026 Martin Gäckler
 
-		This program is free software: you can redistribute it and/or modify  
-		it under the terms of the GNU General Public License as published by  
+		This program is free software: you can redistribute it and/or modify
+		it under the terms of the GNU General Public License as published by
 		the Free Software Foundation, version 3.
 
-		You should have received a copy of the GNU General Public License 
+		You should have received a copy of the GNU General Public License
 		along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 		THIS SOFTWARE IS PROVIDED BY Martin Gäckler, Linz, Austria ``AS IS''
@@ -31,7 +31,6 @@
 //---------------------------------------------------------------------------
 #include <winsock2.h>
 
-#include <io.h>
 #include <iostream>
 #include <fstream>
 #include <time.h>
@@ -39,15 +38,11 @@
 #include <gak/string.h>
 #include <gak/httpProfiler.h>
 #include <gak/fmtNumber.h>
+#include <gak/mboxParser.h>
+#include <gak/stringStream.h>
+#include <gak/stdlib.h>
 
 #pragma hdrstop
-
-#ifdef _MSC_VER
-using std::cerr;
-using std::cout;
-using std::ofstream;
-using std::ios;
-#endif
 
 using namespace gak;
 
@@ -57,7 +52,7 @@ using namespace gak;
 
 static int executeCommand( int argc, const char *argv[], bool fromMain );
 
-static char *getCurrentTime( void )
+static const char *getCurrentTime()
 {
 	time_t		timer;
 	struct tm	*tblock;
@@ -75,7 +70,7 @@ static char *getCurrentTime( void )
 
 static void usage()
 {
-	cerr << "usage http_get.exe [options] <url>\n\n"
+	std::cerr << "usage http_get.exe [options] <url>\n\n"
 		"options are:\n"
 		"-C <cookies> which cookies to send\n"
 		"-F <file>    where to save the document\n"
@@ -86,18 +81,21 @@ static void usage()
 		"-P <proxy>   which proxy server to use\n"
 		"-O <port>    which proxy port to use\n"
 		"-U <count>   number of user to emulate\n"
+		"-X <time>    expectd time to execute\n"
+		"-Z <file>    save loaded URLs to a file\n"
 		"-I           include subdata (images, frames etc.)\n"
-		"-L           log socket errors to stderr\n"
-		"-E           log http errors (status >= 400) to stderr\n"
+		"-E           log socket errors and http errors (status >= 400) to stderr\n"
 		"-T           log timing to stdout\n"
 		"-H           log header to stdout\n"
-		"-S <server>  client server mode \\\\<server>\\ll_check \n\n"
-		"(c) 2005 by CRESD - Christina Ragg EDV und Sprachen Dienste GmbH, Munich\n";
+		"-M           append problem to mbox file\n"
+		"-S <server>  slave mode \\\\<server>\\ll_check \n\n"
+		"(c) 2005-2026 by gak - Martin Gäckler, Linz, Austria\n";
+	throw( -1 );
 }
 
-static void dumpHttpObject( net::HTTPrequest *theConnection )
+static void dumpHttpObject( std::ostream &out, net::HTTPrequest *theConnection )
 {
-	cerr << theConnection->getHeader() << '\n'
+	out << theConnection->getHeader() << '\n'
 		<< theConnection->getBody() << '\n';
 }
 
@@ -105,7 +103,7 @@ static void parseCommandLine( const char *exeName, const char *commandLine )
 {
 	int						argc;
 	Array<const char *>		argv;
-	char					*localCommandLine = strdup( commandLine );
+	Buffer<char>			localCommandLine( strdup( commandLine ) );
 	char					c, *arg, *cp;
 	bool					inString = false;
 
@@ -154,48 +152,42 @@ static void parseCommandLine( const char *exeName, const char *commandLine )
 			cp++;
 	}
 
-
-	executeCommand( argc, (const char **)argv.getDataBuffer(), false );
-
-	free( localCommandLine );
+	executeCommand( argc, argv.getDataBuffer(), false );
 }
 
-static int executeControlFile( const char *exeName, const char *fileName )
+static int runSlaveMode( const char *exeName, const char *fileName )
 {
-	FILE	*fp;
 	STRING	commandLine;
 
 	// create the controlFile
-	fp = fopen( fileName, "w" );
-	if( fp )
 	{
-		fclose( fp );
-	}
-	else
-	{
-		cerr << "Cannot create control file\n";
-/*@*/	return 1;
+		std::ofstream fp( fileName );
+		if( !fp.is_open() )
+		{
+			std::cerr << "Cannot create control file\n";
+/*@*/		return 1;
+		}
 	}
 
-	cout << "Waiting\n";
+	std::cout << "Waiting\n";
 	while( !access( fileName, 0 ) )
 	{
-		fp = fopen( fileName, "r" );
-		if( fp )
+		std::ifstream in(fileName);
+		if( in.is_open() )
 		{
-			commandLine << fp;
-			if( commandLine[0U] )
+			in >> commandLine;
+			if( !commandLine.isEmpty() )
 			{
-				cout << "Read cmd: " << commandLine << '\n';
+				std::cout << "Read cmd: " << commandLine << '\n';
 				parseCommandLine( exeName, commandLine );
 
-				cout << "Waiting\n";
+				std::cout << "Waiting\n";
 			}
 
-			fclose( fp );
-			fp = fopen( fileName, "w" );
-			if( fp )
-				fclose( fp );
+			in.close();
+			{
+				std::ofstream fp( fileName );
+			}
 		}
 		Sleep( 1000 );
 	}
@@ -209,11 +201,11 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 
 	int			i, statusCode;
 	STRING		url, cookies, proxy, outputFile, httpHeader, headerInfo;
-	STRING		stopfile, controlFile;
+	STRING		stopfile, controlFile, scriptFile;
 	STRING		commandLine;
 	const char	*arg;
 
-	bool		logExceptions	= false;
+	bool		mboxReports		= false;
 	bool		logErrors		= false;
 	bool		logTiming		= false;
 	bool		logHeader		= false;
@@ -224,6 +216,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 	int			proxyPort		= 0;
 	int			returnCode		= 0;
 	int			userCount		= 1;
+	clock_t		maxTime			= 0;
 
 	commandLine = argv[0];
 	for( i=1; i<argc; i++ )
@@ -270,6 +263,12 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 					commandLine += " -B ";
 					commandLine += formatNumber( buffsize );
 					break;
+				case 'X':
+					i++;
+					maxTime = atoi( argv[i] );
+					commandLine += " -X ";
+					commandLine += formatNumber( maxTime );
+					break;
 				case 'D':
 					i++;
 					delay = atoi( argv[i] );
@@ -313,10 +312,6 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 					}
 
 					break;
-				case 'L':
-					commandLine += " -L";
-					logExceptions = true;
-					break;
 				case 'E':
 					commandLine += " -E";
 					logErrors = true;
@@ -333,17 +328,25 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 					commandLine += " -I";
 					includes = true;
 					break;
+				case 'M':
+					commandLine += " -M";
+					mboxReports = true;
+					break;
+				case 'Z':
+					i++;
+					//commandLine += " -Z";
+					scriptFile = argv[i];
+					break;
+
 				default:
-					cerr << "illegal option " << arg << " found\n";
+					std::cerr << "illegal option " << arg << " found\n";
 					usage();
-					exit( -1 );
 			}
 		}
-		else if( url[0U] )
+		else if( !url.isEmpty() )
 		{
-			cerr << "more than one url found\n";
+			std::cerr << "more than one url found\n";
 			usage();
-			exit( -1 );
 		}
 		else
 		{
@@ -354,110 +357,166 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 		}
 	}
 
-	if( controlFile[0U] )
+	if( !controlFile.isEmpty() )
 	{
-		returnCode = executeControlFile( argv[0], controlFile );
+		returnCode = runSlaveMode( argv[0], controlFile );
 	}
-	else if( !url[0U] )
+	else if( url.isEmpty() )
 	{
-		cerr << "no url found\n";
+		std::cerr << "no url found\n";
 		usage();
-		exit( -1 );
 	}
 	else if( userCount > 0 )
 	{
 		if( userCount > 1 )
 		{
-			cout << "Start: " << commandLine << '\n';
+			std::cout << "Start: " << commandLine << '\n';
 			WinExec( commandLine, SW_SHOW );
 			if( delay > 0 )
 				Sleep( delay * 1000 );
 		}
 
-		net::HTTPprofiler	*theConnection	= new net::HTTPprofiler;
+		std::auto_ptr<net::HTTPprofiler>	theConnection( new net::HTTPprofiler );
 
 		if( count < 1 )
 			count = 1;
 
-		if( cookies[0U] )
+		if( !cookies.isEmpty() )
 			theConnection->setCookies( cookies );
-		if( proxy[0U] )
+		if( !proxy.isEmpty() )
 			theConnection->setProxy( proxy, proxyPort );
 
-		if( stopfile[0U] )
+		if( !stopfile.isEmpty() )
 			count = 1;
 		for( int i=0; i<count; i++ )
 		{
+			STRING			errBuffer;
+
 			clock_t startTime = clock();
 			size_t responseLen = !i
-				? theConnection->Get( (const char *)url, includes, false, false, false, buffsize )
+				? theConnection->Get( url, includes, false, false, false, buffsize )
 				: theConnection->playScript( false );
 
-			clock_t	endTime = clock();
+			clock_t	execTime = clock() - startTime;
 
 			statusCode = theConnection->getHttpStatusCode();
+
 			if( !responseLen )
 			{
 				// error during connection
-				if( logExceptions )
+				if( logErrors || mboxReports )
 				{
-					cerr << getCurrentTime() << ",caught signal " << theConnection->getSocketError() << " on try " << i << " when getting " << url << "\n";
-					dumpHttpObject( theConnection );
+					oSTRINGstream	out(errBuffer);
+
+					out << getCurrentTime() << ",caught signal " << theConnection->getSocketError() << " on try " << i << " when getting " << url << "\n";
+					dumpHttpObject( out, theConnection.get() );
 				}
 				returnCode++;
 			}
-			else if( logErrors )
+			else if( logErrors || mboxReports )
 			{
 				if( statusCode >= 400 || statusCode < 100 )
 				{
-					cerr <<	getCurrentTime() << ",bad status code " <<
+					oSTRINGstream	out(errBuffer);
+
+					out <<	getCurrentTime() << ",bad status code " <<
 							statusCode << ' ' <<
 							theConnection->getHttpStatusText() <<
 							" found on try " << i << " when getting " <<
 							url << '\n'
 					;
-					dumpHttpObject( theConnection );
+					dumpHttpObject( out, theConnection.get() );
 					returnCode++;
+				}
+			}
+			if( maxTime && execTime > maxTime )
+			{
+				oSTRINGstream	out(errBuffer);
+
+				out <<	getCurrentTime() << ", too slow execution " <<
+						execTime << '>' << maxTime << 
+						" found on try " << i << " when getting " <<
+						url << '\n' <<
+						theConnection->getHeader() << '\n'
+				;
+//				dumpHttpObject( out, theConnection.get() );
+				returnCode++;
+			}
+			if( !errBuffer.isEmpty() )
+			{
+				if( logErrors )
+				{
+					std::cerr << errBuffer;
+				}
+				if( mboxReports )
+				{
+					mail::appendMail("http_get errors", errBuffer );
 				}
 			}
 			if( logTiming )
 			{
-				cout << (endTime-startTime) << ',' << url << ',' << i << '\n';
+				std::cout << execTime << ','
+					<< theConnection->count() << ','
+					<< responseLen << ','
+					<< url << ','
+					<< i << '\n';
 			}
 			if( logHeader )
 			{
-				cout << url << ',' << i << '\n'
+				std::cout << url << ',' << i << '\n'
 					<< theConnection->getHeader() << '\n';
 			}
-			if( statusCode == 200 && outputFile[0U] )
+			if( statusCode == 200 && !outputFile.isEmpty() )
 			{
-				std::ofstream theStream( (const char *)outputFile, ios::out|ios::binary );
+				std::ofstream theStream( outputFile, std::ios::out|std::ios::binary );
 				if( !theStream.fail() )
 					theStream << theConnection->getBody();
 				else
 				{
-					cerr <<	getCurrentTime() << ",cannot open file " <<
+					std::cerr <<	getCurrentTime() << ",cannot open file " <<
 							outputFile << '\n';
 					returnCode++;
 				}
 			}
 
-			if( stopfile[0U] && !access(stopfile, 0) )
+			if( !scriptFile.isEmpty() )
+			{
+				theConnection->saveScript( scriptFile );
+			}
+
+			if( !stopfile.isEmpty() && !access(stopfile, 0) )
 				count++;
 		}
-		delete theConnection;
 	}
 
 	if( returnCode )
 	{
-		cerr << "got " << returnCode << " errors of " << count <<"\n";
+		std::cerr << "got " << returnCode << " errors of " << count <<"\n";
 	}
 	return returnCode;
 }
 
 int main( int argc, const char *argv[] )
 {
-	return executeCommand( argc, argv, true );
+	try
+	{
+		return executeCommand( argc, argv, true );
+	}
+	catch( std::exception &e )
+	{
+		std::cerr << "Exception exit " << e.what() << " of main!!!" << std::endl;
+		return -1;
+	}
+	catch( int err )
+	{
+		std::cerr << "Exception exit " << err << " of main!!!" << std::endl;
+		return err;
+	}
+	catch( ... )
+	{
+		std::cerr << "Exception exit of main!!!" << std::endl;
+		return -1;
+	}
 }
 
 //---------------------------------------------------------------------------

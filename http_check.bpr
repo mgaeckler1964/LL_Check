@@ -72,7 +72,7 @@ AutoIncBuild=1
 MajorVer=3
 MinorVer=0
 Release=0
-Build=56
+Build=57
 Debug=0
 PreRelease=0
 Special=0
@@ -84,7 +84,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=CRESD GmbH
 FileDescription=Web Analyser
-FileVersion=3.0.0.56
+FileVersion=3.0.0.57
 InternalName=HTTP CHECK
 LegalCopyright=(c) 2003-2014 by CRESD GmbH
 LegalTrademarks=
