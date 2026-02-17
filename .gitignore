@@ -38,3 +38,5 @@ bin/
 # Backups
 *.bak
 *.~*
+
+urls.txt
