@@ -35,6 +35,7 @@
 #include <fstream>
 #include <time.h>
 
+#include <gak/datetime.h>
 #include <gak/string.h>
 #include <gak/httpProfiler.h>
 #include <gak/fmtNumber.h>
@@ -53,20 +54,10 @@ using namespace gak;
 
 static int executeCommand( int argc, const char *argv[], bool fromMain );
 
-static const char *getCurrentTime()
+static STRING getCurrentTime()
 {
-	time_t		timer;
-	struct tm	*tblock;
-	char		*timeStr;
-	size_t		timeLen;
-
-	timer = time(NULL);
-	tblock = localtime(&timer);
-	timeStr = asctime(tblock);
-	timeLen = strlen( timeStr );
-	timeStr[timeLen-1] = 0;
-
-	return timeStr;
+	DateTime	now;
+	return now.getOriginalTime();	
 }
 
 static void usage()
