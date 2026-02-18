@@ -54,34 +54,28 @@ using namespace gak;
 
 static int executeCommand( int argc, const char *argv[], bool fromMain );
 
-static STRING getCurrentTime()
-{
-	DateTime	now;
-	return now.getOriginalTime();	
-}
-
 static void usage()
 {
 	std::cerr << "usage http_get.exe [options] <url>\n\n"
 		"options are:\n"
-		"-C <cookies> which cookies to send\n"
-		"-F <file>    where to save the document\n"
-		"-A <count>   how often to send the request - default: 1\n"
-		"-A <file>    send requests until <file> has been deleted\n"
-		"-D <delay>   which delay between two processes - default: 0\n"
-		"-B <size>    receive buffer size - default: 10240\n"
-		"-P <proxy>   which proxy server to use\n"
-		"-O <port>    which proxy port to use\n"
-		"-U <count>   number of user to emulate\n"
-		"-X <time>    expectd time to execute\n"
-		"-Y           Redirect stdout to <ProgramData>\n"
-		"-Z <file>    save loaded URLs to a file\n"
-		"-I           include subdata (images, frames etc.)\n"
-		"-E           log socket errors and http errors (status >= 400) to stderr\n"
-		"-T           log timing to stdout\n"
-		"-H           log header to stdout\n"
-		"-M           append problem to mbox file\n"
-		"-S <server>  slave mode \\\\<server>\\ll_check \n\n"
+		"-C <cookies>          which cookies to send\n"
+		"-F <file>             where to save the document\n"
+		"-A <count>            how often to send the request - default: 1\n"
+		"-A <file>             send requests until <file> has been deleted\n"
+		"-D <delay>            which delay between two processes - default: 0\n"
+		"-B <size>             receive buffer size - default: 10240\n"
+		"-P <proxy>[:<port>]   which proxy server to use\n"
+		"-U <count>            number of user to emulate\n"
+		"-W <count>            expected file count (incl. subdata)\n"
+		"-X <time>             expected time to execute\n"
+		"-Y                    Redirect stdout to <ProgramData>\n"
+		"-Z <file>             save loaded URLs to a file\n"
+		"-I                    include subdata (images, frames etc.)\n"
+		"-E                    log socket errors and http errors (status >= 400) to stderr\n"
+		"-T                    log timing to stdout\n"
+		"-H                    log header to stdout\n"
+		"-M                    append problem to mbox file\n"
+		"-S <server>           slave mode \\\\<server>\\ll_check \n\n"
 		"(c) 2005-2026 by gak - Martin Gäckler, Linz, Austria\n";
 	throw( -1 );
 }
@@ -205,6 +199,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 	bool		includes		= false;
 	bool		redirectStdOut	= false;
 	int			count			= 1;
+	int			expSubDataCount	= 0;
 	int			delay			= 0;
 	int			buffsize		= 10240;
 	int			proxyPort		= 0;
@@ -230,13 +225,21 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 					commandLine += '\"';
 					break;
 				case 'P':
+				{
 					i++;
 					proxy = argv[i];
-					commandLine += " -P";
-					commandLine += " \"";
+					commandLine += " -P ";
 					commandLine += proxy;
-					commandLine += '\"';
+
+					ArrayOfStrings	proxyWithPort;
+					proxyWithPort.createElements( proxy, ":" );
+					proxy = proxyWithPort[0];
+					if( proxyWithPort.size() > 1 )
+					{
+						proxyPort = atoi( proxyWithPort[1] );
+					}
 					break;
+				}
 				case 'F':
 					i++;
 					outputFile = argv[i];
@@ -244,12 +247,6 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 					commandLine += " \"";
 					commandLine += outputFile;
 					commandLine += '\"';
-					break;
-				case 'O':
-					i++;
-					proxyPort = atoi( argv[i] );
-					commandLine += " -O ";
-					commandLine += formatNumber( proxyPort );
 					break;
 				case 'B':
 					i++;
@@ -262,6 +259,12 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 					maxTime = atoi( argv[i] );
 					commandLine += " -X ";
 					commandLine += formatNumber( maxTime );
+					break;
+				case 'W':
+					i++;
+					expSubDataCount = atoi( argv[i] );
+					commandLine += " -W ";
+					commandLine += formatNumber( expSubDataCount );
 					break;
 				case 'D':
 					i++;
@@ -406,7 +409,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 				{
 					oSTRINGstream	out(errBuffer);
 
-					out << getCurrentTime() << ",caught signal " << theConnection->getSocketError() << " on try " << i << " when getting " << url << "\n";
+					out << DateTime() << ",caught signal " << theConnection->getSocketError() << " on try " << i << " when getting " << url << "\n";
 					dumpHttpObject( out, theConnection.get() );
 				}
 				returnCode++;
@@ -417,7 +420,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 				{
 					oSTRINGstream	out(errBuffer);
 
-					out <<	getCurrentTime() << ",bad status code " <<
+					out <<	DateTime() << ",bad status code " <<
 							statusCode << ' ' <<
 							theConnection->getHttpStatusText() <<
 							" found on try " << i << " when getting " <<
@@ -431,14 +434,27 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 			{
 				oSTRINGstream	out(errBuffer);
 
-				out <<	getCurrentTime() << ", too slow execution " <<
-						execTime << '>' << maxTime << 
+				out <<	DateTime() << ", too slow execution " <<
+						execTime << '>' << maxTime <<
 						" found on try " << i << " when getting " <<
 						url << '\n' <<
 						theConnection->getHeader() << '\n'
 				;
 				returnCode++;
 			}
+			if( expSubDataCount && expSubDataCount != theConnection->count() )
+			{
+				oSTRINGstream	out(errBuffer);
+
+				out <<	DateTime() << ", incorrect number of requests " <<
+						expSubDataCount << "!=" << theConnection->count() <<
+						" found on try " << i << " when getting " <<
+						url << '\n' <<
+						theConnection->getHeader() << '\n'
+				;
+				returnCode++;
+			}
+
 			if( !errBuffer.isEmpty() )
 			{
 				if( logErrors )
@@ -463,7 +479,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 				}
 				if( logTiming )
 				{
-					*out << getCurrentTime() << ',' << execTime << ','
+					*out << DateTime() << ',' << execTime << ','
 						<< theConnection->count() << ','
 						<< responseLen << ','
 						<< statusCode << ','
@@ -472,7 +488,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 				}
 				if( logHeader )
 				{
-					*out << getCurrentTime() << ',' << url << ',' << i << '\n'
+					*out << DateTime() << ',' << url << ',' << i << '\n'
 						<< theConnection->getHeader() << '\n';
 				}
 			}
@@ -483,7 +499,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 					theStream << theConnection->getBody();
 				else
 				{
-					std::cerr <<	getCurrentTime() << ",cannot open file " <<
+					std::cerr << DateTime() << ",cannot open file " <<
 							outputFile << '\n';
 					returnCode++;
 				}
