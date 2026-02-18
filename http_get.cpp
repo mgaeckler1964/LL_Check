@@ -58,24 +58,23 @@ static void usage()
 {
 	std::cerr << "usage http_get.exe [options] <url>\n\n"
 		"options are:\n"
-		"-C <cookies>          which cookies to send\n"
-		"-F <file>             where to save the document\n"
-		"-A <count>            how often to send the request - default: 1\n"
-		"-A <file>             send requests until <file> has been deleted\n"
-		"-D <delay>            which delay between two processes - default: 0\n"
-		"-B <size>             receive buffer size - default: 10240\n"
-		"-P <proxy>[:<port>]   which proxy server to use\n"
-		"-U <count>            number of user to emulate\n"
-		"-W <count>            expected file count (incl. subdata)\n"
-		"-X <time>             expected time to execute\n"
-		"-Y                    Redirect stdout to <ProgramData>\n"
-		"-Z <file>             save loaded URLs to a file\n"
-		"-I                    include subdata (images, frames etc.)\n"
-		"-E                    log socket errors and http errors (status >= 400) to stderr\n"
-		"-T                    log timing to stdout\n"
-		"-H                    log header to stdout\n"
-		"-M                    append problem to mbox file\n"
-		"-S <server>           slave mode \\\\<server>\\ll_check \n\n"
+		"-C <cookies>                   which cookies to send\n"
+		"-F <file>                      where to save the document\n"
+		"-A <count>                     how often to send the request - default: 1\n"
+		"-A <file>                      send requests until <file> has been deleted\n"
+		"-D <delay>                     which delay between two processes - default: 0\n"
+		"-B <size>                      receive buffer size - default: 10240\n"
+		"-P <proxy>[:<port>]            which proxy server to use\n"
+		"-U <count>                     number of user to emulate\n"
+		"-X <time>:<count>:<min>:<max>  expected max time, file count, min, max size\n"
+		"-Y                             Redirect stdout to <ProgramData>\n"
+		"-Z <file>                      save loaded URLs to a file\n"
+		"-I                             include subdata (images, frames etc.)\n"
+		"-E                             log errors (socket, http or content) to stderr\n"
+		"-T                             log timing to stdout\n"
+		"-H                             log header to stdout\n"
+		"-M                             append problems to mbox file\n"
+		"-S <server>                    slave mode \\\\<server>\\ll_check \n\n"
 		"(c) 2005-2026 by gak - Martin Gäckler, Linz, Austria\n";
 	throw( -1 );
 }
@@ -199,13 +198,16 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 	bool		includes		= false;
 	bool		redirectStdOut	= false;
 	int			count			= 1;
-	int			expSubDataCount	= 0;
 	int			delay			= 0;
 	int			buffsize		= 10240;
 	int			proxyPort		= 0;
 	int			returnCode		= 0;
 	int			userCount		= 1;
+
 	clock_t		maxTime			= 0;
+	int			expSubDataCount	= 0;
+	int			minSize			= 0;
+	int			maxSize			= 0;
 
 	commandLine = argv[0];
 	for( i=1; i<argc; i++ )
@@ -254,18 +256,26 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 					commandLine += " -B ";
 					commandLine += formatNumber( buffsize );
 					break;
+
 				case 'X':
+				{
 					i++;
-					maxTime = atoi( argv[i] );
+					STRING exprected = argv[i];
 					commandLine += " -X ";
-					commandLine += formatNumber( maxTime );
+					commandLine += exprected;
+
+					ArrayOfStrings data;
+					data.createElements(exprected, ":");
+					if( data.size() )
+						maxTime = atoi( data[0] );
+					if( data.size() > 1 )
+						expSubDataCount = atoi( data[1] );
+					if( data.size() > 2 )
+						minSize = atoi( data[2] );
+					if( data.size() > 3 )
+						maxSize = atoi( data[3] );
 					break;
-				case 'W':
-					i++;
-					expSubDataCount = atoi( argv[i] );
-					commandLine += " -W ";
-					commandLine += formatNumber( expSubDataCount );
-					break;
+				}
 				case 'D':
 					i++;
 					delay = atoi( argv[i] );
@@ -454,6 +464,30 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 				;
 				returnCode++;
 			}
+			if( minSize && minSize > responseLen )
+			{
+				oSTRINGstream	out(errBuffer);
+
+				out <<	DateTime() << ", too few data " <<
+						minSize << ">" << responseLen <<
+						" found on try " << i << " when getting " <<
+						url << '\n' <<
+						theConnection->getHeader() << '\n'
+				;
+				returnCode++;
+			}
+			if( maxSize && maxSize < responseLen )
+			{
+				oSTRINGstream	out(errBuffer);
+
+				out <<	DateTime() << ", too much data " <<
+						maxSize << "<" << responseLen <<
+						" found on try " << i << " when getting " <<
+						url << '\n' <<
+						theConnection->getHeader() << '\n'
+				;
+				returnCode++;
+			}
 
 			if( !errBuffer.isEmpty() )
 			{
@@ -475,7 +509,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 					STRING logFile = getGlobalConfig() +
 							DIRECTORY_DELIMITER_STRING "httpGetTimings.csv";
 					of.open( logFile, ios_base::app|ios_base::out );
-					out = &of; 
+					out = &of;
 				}
 				if( logTiming )
 				{
