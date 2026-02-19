@@ -469,7 +469,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 				oSTRINGstream	out(errBuffer);
 
 				out <<	DateTime() << ", too few data " <<
-						minSize << ">" << responseLen <<
+						formatNumber(minSize,0,0,' ') << ">" << formatNumber(responseLen,0,0,' ') <<
 						" found on try " << i << " when getting " <<
 						url << '\n' <<
 						theConnection->getHeader() << '\n'
@@ -481,7 +481,7 @@ static int executeCommand( int argc, const char *argv[], bool fromMain )
 				oSTRINGstream	out(errBuffer);
 
 				out <<	DateTime() << ", too much data " <<
-						maxSize << "<" << responseLen <<
+						maxSize << "<" << formatNumber(responseLen,0,0,' ') <<
 						" found on try " << i << " when getting " <<
 						url << '\n' <<
 						theConnection->getHeader() << '\n'
